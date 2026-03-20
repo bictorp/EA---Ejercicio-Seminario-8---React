@@ -14,6 +14,7 @@ const OrganizationManagement = () => {
   const { organizations, loading, error, createOrganization, updateOrganization, deleteOrganization } = useOrganization();
   const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSave = async (data: OrganizationFormData) => {
     try {
@@ -55,6 +56,10 @@ const OrganizationManagement = () => {
     setEditingOrg(null);
   };
 
+  const filteredOrganizations = organizations.filter((org) =>
+    org.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h2 className="mb-4">Organizations</h2>
@@ -65,25 +70,39 @@ const OrganizationManagement = () => {
         </div>
       )}
 
-      {showForm ? (
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        {!showForm && (
+          <Button color="primary" onClick={handleAddClick}>
+            Add Organization
+          </Button>
+        )}
+        <div className="flex-grow-1 ms-3" style={{ maxWidth: '300px' }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {showForm && (
         <OrganizationForm
           onSubmit={handleSave}
           initialData={editingOrg || undefined}
           onCancel={handleCancel}
         />
-      ) : (
-        <Button className="mb-3" color="primary" onClick={handleAddClick}>
-          Add Organization
-        </Button>
       )}
 
       <OrganizationList
-        organizations={organizations}
+        organizations={filteredOrganizations}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
     </div>
   );
 };
+
 
 export default OrganizationManagement;
