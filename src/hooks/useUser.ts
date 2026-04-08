@@ -4,6 +4,7 @@ import organizationService from '../services/organization-service';
 import { CanceledError } from '../services/api-client';
 import { User } from '../models/User';
 import { Organization } from '../models/Organization';
+import activityService from '../services/activity-service';
 
 interface UseUsersReturn {
   users: User[];
@@ -77,6 +78,8 @@ export const useUser = (): UseUsersReturn => {
       setUsers((prevUsers) =>
         prevUsers.map((u) => (u._id === tempUser._id ? savedUser : u))
       );
+      // NUEVO: Registrar actividad
+      activityService.logActivity('Usuari Creat', `S'ha creat un nou usuari correctament.`);
     } catch (err) {
       setError((err as Error).message);
       setUsers(originalUsers);
@@ -90,6 +93,8 @@ export const useUser = (): UseUsersReturn => {
 
     try {
       await userService.update(user);
+      // NUEVO: Registrar actividad al editar
+      activityService.logActivity('Usuari Editat', `S'ha actualitzat l'usuari correctament.`);
     } catch (err) {
       setError((err as Error).message);
       setUsers(originalUsers);
@@ -103,6 +108,8 @@ export const useUser = (): UseUsersReturn => {
 
     try {
       await userService.delete(userId);
+      // NUEVO: Registrar actividad al eliminar
+      activityService.logActivity('Usuari Eliminat', `S'ha esborrat l'usuari correctament.`);
     } catch (err) {
       setError((err as Error).message);
       setUsers(originalUsers);

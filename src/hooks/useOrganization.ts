@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import organizationService from '../services/organization-service';
 import { CanceledError } from '../services/api-client';
 import { Organization } from '../models/Organization';
+import activityService from '../services/activity-service';
 
 interface UseOrganizationsReturn {
   organizations: Organization[];
@@ -59,6 +60,8 @@ export const useOrganization = (): UseOrganizationsReturn => {
       setOrganizations((prevOrgs) =>
         prevOrgs.map((o) => (o._id === tempOrg._id ? savedOrg : o))
       );
+      // NUEVO: Registrar actividad al crear
+      activityService.logActivity('Organització Creada', `S'ha creat una nova organització.`);
     } catch (err) {
       setError((err as Error).message);
       setOrganizations(originalOrganizations);
@@ -74,6 +77,8 @@ export const useOrganization = (): UseOrganizationsReturn => {
 
     try {
       await organizationService.update(organization);
+      //NUEVO: Registrar actividad al editar
+      activityService.logActivity('Organització Editada', `S'ha actualitzat l'organització.`);
     } catch (err) {
       setError((err as Error).message);
       setOrganizations(originalOrganizations);
@@ -87,6 +92,8 @@ export const useOrganization = (): UseOrganizationsReturn => {
 
     try {
       await organizationService.delete(organizationId);
+      // NUEVO: Registrar actividad al eliminar
+      activityService.logActivity('Organització Eliminada', `S'ha esborrat l'organització.`);
     } catch (err) {
       setError((err as Error).message);
       setOrganizations(originalOrganizations);
