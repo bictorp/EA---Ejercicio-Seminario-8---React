@@ -1,4 +1,5 @@
 # React User and Organization Management Application
+Se ha implementado IA (Gemini AI) para la corrección de código y tener una correcta comprensión del mismo.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
